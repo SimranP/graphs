@@ -1,0 +1,25 @@
+{
+  "name": "graphs",
+  "version": "1.0.0",
+  "description": "A set of javascript tests designed to get you to implement graphs.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha tests/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SRJPN/graphs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SRJPN/graphs/issues"
+  },
+  "homepage": "https://github.com/SRJPN/graphs#readme",
+  "dependencies": {
+    "chai": "^3.4.1"
+  }
+}
