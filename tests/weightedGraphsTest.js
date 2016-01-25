@@ -2,6 +2,29 @@ var graphs=require('../lib/weightedGraph');
 var assert=require('chai').assert;
 var ld=require('lodash');
 
+var denseGraph=function() {
+	var g=new graphs.WeightedGraph();
+	var vertices=['A','B','C','D','E','F','G','H','I','J'];
+
+	vertices.forEach(function(vertex){
+		g.addVertex(vertex);
+	});
+	var edge = new graphs.Edge('AB','A','B',100);
+	g.addEdge(edge);
+	var edge1 = new graphs.Edge('AC','A','C',1);
+	g.addEdge(edge1);
+	var edge2 = new graphs.Edge('JB','J','B',1);
+	g.addEdge(edge2);
+
+	for (var i = 1; i < vertices.length-1; i++) {
+		var from=vertices[i];
+		for (var j = i+1; j < vertices.length; j++) {
+			var edge = new graphs.Edge(from+vertices[j],from,vertices[j],1);
+			g.addEdge(edge);
+		}
+	}
+	return g;
+};
 
 describe("shortest path",function(){
 	it("should choose the only path when only one path exists",function(){
@@ -68,5 +91,14 @@ describe("shortest path",function(){
 		assert.equal(1,path.length);
 		assert.deepEqual(e1,path[0]);
 	});
-
+	it("should give the shortest path for a dense graph", function(){
+		var g=denseGraph();
+		var path = g.shortestPath('A','B');
+		var vertices=['A','B','C','D','E','F','G','H','I','J'];
+		var edges = ['AC','CD','DE','EF','FG','GH','HI','IJ','JB'];
+		assert.equal(path.length,9);
+		for (var i = 0; i < edges.length; i++) {
+			assert.equal(path[i].edge,edges[i]);
+		};
+	});
 });
