@@ -9,18 +9,14 @@ var denseGraph=function() {
 	vertices.forEach(function(vertex){
 		g.addVertex(vertex);
 	});
-	var edge = new graphs.Edge('AB','A','B',100);
-	g.addEdge(edge);
-	var edge1 = new graphs.Edge('AC','A','C',1);
-	g.addEdge(edge1);
-	var edge2 = new graphs.Edge('JB','J','B',1);
-	g.addEdge(edge2);
 
-	for (var i = 1; i < vertices.length-1; i++) {
+	for (var i = 0; i < vertices.length-1; i++) {
 		var from=vertices[i];
 		for (var j = i+1; j < vertices.length; j++) {
 			var edge = new graphs.Edge(from+vertices[j],from,vertices[j],1);
 			g.addEdge(edge);
+			var returnEdge = new graphs.Edge(vertices[j]+from,vertices[j],from,1);
+			g.addEdge(returnEdge);
 		}
 	}
 	return g;
@@ -95,9 +91,9 @@ describe("shortest path",function(){
 		var g=denseGraph();
 		var path = g.shortestPath('A','B');
 		var vertices=['A','B','C','D','E','F','G','H','I','J'];
-		var edges = ['AC','CD','DE','EF','FG','GH','HI','IJ','JB'];
-		assert.equal(path.length,9);
-		for (var i = 0; i < edges.length; i++) {
+		var edges = ['AB','CB'];
+		assert.equal(path.length,1);
+		for (var i = 0; i < path.length; i++) {
 			assert.equal(path[i].edge,edges[i]);
 		};
 	});
