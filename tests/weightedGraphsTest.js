@@ -22,6 +22,31 @@ var denseGraph=function() {
 	return g;
 };
 
+var complexGraph = function(){
+	var g = new graphs.WeightedGraph();
+	var vertices=['A','B','C','D','E','F'];
+	vertices.forEach(function(vertex){
+		g.addVertex(vertex);
+	});
+	var edges = {	AB : new graphs.Edge('AB','A','B',10),
+					AC : new graphs.Edge('AC','A','C',9),
+					AE : new graphs.Edge('AE','A','E',14),
+					BD : new graphs.Edge('BD','B','D',10),
+					CD : new graphs.Edge('CD','C','D',8),
+					CE : new graphs.Edge('CE','C','E',4),
+					DF : new graphs.Edge('DF','D','F',2),
+					EF : new graphs.Edge('EF','E','F',7),
+					CF : new graphs.Edge('CF','C','F',5),
+	};
+	for (var i = 0; i < vertices.length; i++) {
+		for (var j = 0; j < vertices.length; j++) {
+			var edge = vertices[i]+vertices[j];
+			edges[edge] && g.addEdge(edges[edge]);
+		};
+	};
+	return g;
+};
+
 describe("shortest path",function(){
 	it("should choose the only path when only one path exists",function(){
 		var g=new graphs.WeightedGraph();
@@ -88,6 +113,7 @@ describe("shortest path",function(){
 		assert.deepEqual(e1,path[0]);
 	});
 	it("should give the shortest path for a dense graph", function(){
+		this.timeout(10000)
 		var g=denseGraph();
 		var path = g.shortestPath('A','B');
 		var vertices=['A','B','C','D','E','F','G','H','I','J'];
@@ -96,5 +122,46 @@ describe("shortest path",function(){
 		for (var i = 0; i < path.length; i++) {
 			assert.equal(path[i].edge,edges[i]);
 		};
+	});
+	it("should give the shortest path for given complex graph",function(){
+		var g = complexGraph();		
+		var shortAB = g.shortestPath('A','B');
+		assert.equal(shortAB.length,1);
+		assert.equal(shortAB[0].edge, 'AB');
+
+		var shortAC = g.shortestPath('A','C');
+		assert.equal(shortAC.length,1);
+		assert.equal(shortAC[0].edge, 'AC');
+
+		var shortAF = g.shortestPath('A','F');
+		assert.equal(shortAF.length,2);
+		assert.equal(shortAF[0].edge, 'AC');
+		assert.equal(shortAF[1].edge, 'CF')
+
+		var shortAD = g.shortestPath('A','D');
+		assert.equal(shortAD.length,2);
+		assert.equal(shortAD[0].edge, 'AC');
+		assert.equal(shortAD[1].edge, 'CD');
+
+	});
+	it("should work for multi-graph",function(){
+			var g = new graphs.WeightedGraph();
+		var vertices=['A','B','C','D'];
+		vertices.forEach(function(vertex){
+			g.addVertex(vertex);
+		});
+		var AB = new graphs.Edge('AB','A','B',10);
+		var AC = new graphs.Edge('AC','A','C',9);
+		var BD = new graphs.Edge('BD','B','D',10);
+		var CD = new graphs.Edge('CD','C','D',8);
+		var AB1 = new graphs.Edge('AB1','A','B',5);
+
+		g.addEdge(AB1);
+		g.addEdge(AC);
+		g.addEdge(BD);
+		g.addEdge(CD);
+		g.addEdge(AB);
+
+		assert.deepEqual(g.shortestPath('A','D'),[AB1,BD]);
 	});
 });
